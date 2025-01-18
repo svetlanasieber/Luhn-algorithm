@@ -1,41 +1,41 @@
-package test;
+package Syntax_Recap;
 
-public class JavaLuhnAlgorithm {
-
-    public static void main(String[] args) {
-    
+public class Luhn {
 
 
-
-
-        validateCreditCardNumber("8112189876");
-        String imei = "012850003580200";
-        validateCreditCardNumber(imei);
+    public static boolean validate(String numberString) {
+        return checkSum(numberString) == 0;
     }
 
-    private static void validateCreditCardNumber(String str) {
 
-        int[] ints = new int[str.length()];
-        for (int i = 0; i < str.length(); i++) {
-            ints[i] = Integer.parseInt(str.substring(i, i + 1));
+    public static int checkSum(String numberString) {
+        return checkSum(numberString, false);
+    }
+
+
+    public static int checkSum(String numberString, boolean noCheckDigit) {
+        int sum = 0, checkDigit = 0;
+
+        if (!noCheckDigit)
+            numberString = numberString.substring(0, numberString.length() - 1);
+
+        boolean isDouble = true;
+        for (int i = numberString.length() - 1; i >= 0; i--) {
+            int k = Integer.parseInt(String.valueOf(numberString.charAt(i)));
+            sum += sumToSingleDigit((k * (isDouble ? 2 : 1)));
+            isDouble = !isDouble;
         }
-        for (int i = ints.length - 2; i >= 0; i = i - 2) {
-            int j = ints[i];
-            j = j * 2;
-            if (j > 9) {
-                j = j % 10 + 1;
-            }
-            ints[i] = j;
-        }
-        int sum = 0;
-        for (int i = 0; i < ints.length; i++) {
-            sum += ints[i];
-        }
-        if (sum % 10 == 0) {
-            System.out.println(str + " is a valid credit card number");
-        } else {
-            System.out.println(str + " is an invalid credit card number");
-        }
+
+        if ((sum % 10) > 0)
+            checkDigit = (10 - (sum % 10));
+
+        return checkDigit;
+    }
+
+    private static int sumToSingleDigit(int k) {
+        if (k < 10)
+            return k;
+        return sumToSingleDigit(k / 10) + (k % 10);
     }
 
 }
